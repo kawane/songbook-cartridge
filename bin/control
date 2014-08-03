@@ -8,7 +8,7 @@ dist=songbook
 vertx_version=2.1.2
 vertx_dist=vert.x-$vertx_version
 
-logf="$OPENSHIFT_SONGBOOK_LOG_DIR/console.log"
+logf=${OPENSHIFT_HOMEDIR}/app-root/logs/console.log
 
 SONGBOOK_HOME=${OPENSHIFT_SONGBOOK_DIR}/usr/$dist
 
