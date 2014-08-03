@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-version=${OPENSHIFT_SONGBOOK_VERSION}
+version=0.2.0
 dist=songbook
 
 vertx_version=2.1.2
