@@ -1,0 +1,149 @@
+#!/bin/bash -e
+
+source $OPENSHIFT_CARTRIDGE_SDK_BASH
+
+version=${OPENSHIFT_SONGBOOK_VERSION}
+dist=songbook
+
+vertx_version=2.1.2
+vertx_dist=vert.x-$vertx_version
+
+logf="$OPENSHIFT_SONGBOOK_LOG_DIR/console.log"
+
+SONGBOOK_HOME=${OPENSHIFT_SONGBOOK_DIR}/usr/$dist
+
+VERTX_HOME=${OPENSHIFT_SONGBOOK_DIR}/usr/$vertx_dist
+VERTX_PID_FILE=${OPENSHIFT_HOMEDIR}/app-root/runtime/vertx.pid
+
+# Check if the vertx process is running
+function isrunning() {
+  # Check for running app
+  if [ -f "$VERTX_PID_FILE" ]; then
+    vertxpid=$(cat $VERTX_PID_FILE);
+    if /bin/ps --pid $vertxpid 1>&2 >/dev/null;
+    then
+      return 0
+    fi
+  fi
+ 
+  return 1
+}
+
+# Kill the process given by $1 and its children
+killtree() {
+    local _pid=$1
+    for _child in $(ps -o pid --no-headers --ppid ${_pid}); do
+        killtree ${_child}
+    done
+
+    local should_be_gone_pid=$(ps -o pid -p ${_pid} --no-headers)
+    if [ -z $should_be_gone_pid ]; then
+        return
+    else
+        kill -TERM ${_pid}
+    fi
+
+    local count=0
+    while [ ${count} -lt 15 ]
+    do
+        local should_be_gone_pid=$(ps -o pid -p ${_pid} --no-headers)
+        if [ -z $should_be_gone_pid ]; then
+                return
+        else
+                sleep 2
+                let count=${count}+1
+        fi
+    done
+
+    local should_be_gone_pid=$(ps -o pid -p ${_pid} --no-headers)
+    if [ ! -z $should_be_gone_pid ]
+    then
+        kill -9 ${_pid}
+    fi
+}
+
+function stop() {
+  echo "Stopping $cartridge_type cart"
+  
+  if isrunning; then
+    if [ -f "$VERTX_PID_FILE" ]; then
+      pid=$(cat $VERTX_PID_FILE);
+      echo "Sending SIGTERM to vertx:$pid ..." 1>&2
+      killtree $pid
+    else 
+      echo "Failed to locate Vert.x PID File" 1>&2
+    fi
+  fi
+}
+
+function start() {
+  echo "Starting $cartridge_type cart"
+
+  if isrunning; then
+      echo "Application is already running"
+      return 0
+  fi
+
+  vertx_run="run songbook.server.Server"
+  export DATA_ROOT=${OPENSHIFT_SONGBOOK_DIR}/usr/data
+
+  envf="$OPENSHIFT_REPO_DIR/configuration/songbook.env"
+  
+  #  Source environment if it exists.
+  [ -f "$envf" ]  &&  source "$envf"
+
+ 
+  # Setup max heap and permgen
+  if [ -z "$JVM_HEAP_RATIO" ]; then
+    JVM_HEAP_RATIO=0.5
+  fi
+  if [ -z "$JVM_PERMGEN_RATIO" ]; then
+    JVM_PERMGEN_RATIO=0.2
+  fi
+  max_memory_mb=${OPENSHIFT_GEAR_MEMORY_MB}
+  max_heap=$( echo "$max_memory_mb * $JVM_HEAP_RATIO" | bc | awk '{print int($1+0.5)}')
+  max_permgen=$( echo "$max_memory_mb * $JVM_PERMGEN_RATIO" | bc | awk '{print int($1+0.5)}')
+  VERTX_OPTS="$VERTX_OPTS -Xmx${max_heap}m -XX:MaxPermSize=${max_permgen}m"
+  export VERTX_OPTS
+
+  # Start up vertx
+  pushd $OPENSHIFT_REPO_DIR > /dev/null
+
+    export CLASSPATH=:${SONGBOOK_HOME}/jar/songbook.jar
+    export VERTX_JUL_CONFIG=$OPENSHIFT_SONGBOOK_DIR/conf/logging.properties
+    $VERTX_HOME/bin/vertx $vertx_run $vertx_run_options $vertx_cluster >> $logf 2>&1 &
+    
+    PROCESS_ID=$!
+    echo "$PROCESS_ID" > ${VERTX_PID_FILE}
+  popd > /dev/null
+}
+
+function restart() {
+  echo "Restarting $cartridge_type cart"
+  stop
+  start
+}
+
+function status() {
+  if isrunning; then
+    client_result "Application is running"
+  else
+    client_result "Application is either stopped or inaccessible"
+  fi
+}
+
+# Clean up any log files
+function tidy() {
+  client_message "Emptying log dir: $OPENSHIFT_SONGBOOK_LOG_DIR"
+  shopt -s dotglob
+  rm -rf $OPENSHIFT_SONGBOOK_LOG_DIR/*
+}
+
+case "$1" in
+  start)        start ;;
+  stop)         stop ;;
+  restart)      restart ;;
+  status)       status ;;
+  tidy)         tidy ;;
+  *)            exit 0
+esac

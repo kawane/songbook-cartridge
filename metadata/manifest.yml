@@ -1,0 +1,36 @@
+Name: Songbook
+Cartridge-Short-Name: Songbook
+Cartridge-Version: '0.2.0'
+Cartridge-Vendor: Kawane
+Display-Name: Songbok 0.2
+Description: "Kawane's Songbook."
+Version: '°.2'
+Versions:
+  - '0.2'
+License: "The Apache License, version 2.0"
+License-Url: https://www.apache.org/licenses/LICENSE-2.0.html
+Vendor: Kawane
+Categories:
+  - service
+  - music
+  - lyrics
+  - chords
+Website: http://www.kawane.org/songbook
+Cart-Data:
+  - Key: OPENSHIFT_...
+    Type: environment
+    Description: "How environment variable should be used"
+Provides:
+  - java-8
+  - songbook
+Scaling:
+  Min: 1
+  Max: 1
+Endpoints:
+  - Private-IP-Name:   IP
+    Private-Port-Name: PORT
+    Private-Port:      8080
+    Public-Port-Name:  PROXY_PORT
+    Mappings:
+      - Frontend:      ""
+        Backend:       ""

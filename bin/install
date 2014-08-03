@@ -1,0 +1,24 @@
+#!/bin/bash -e
+
+version=OPENSHIFT_SONGBOOK_VERSION
+dist=songbook
+
+vertx_version=2.1.2
+vertx_dist=vert.x-$vertx_version
+
+# Install vert.x
+if [ ! -d "$OPENSHIFT_SONGBOOK_DIR/usr/$vertx_dist" ]; then
+  wget http://dl.bintray.com/vertx/downloads/$vertx_dist.tar.gz -O $OPENSHIFT_TMP_DIR/$vertx_dist.tar.gz
+  tar xzf $OPENSHIFT_TMP_DIR/$vertx_dist.tar.gz -C $OPENSHIFT_SONGBOOK_DIR/usr/
+  rm -fr $OPENSHIFT_TMP_DIR/$vertx_dist.tar.gz
+fi
+
+# Install Songbook
+if [ ! -d "$OPENSHIFT_SONGBOOK_DIR/usr/$dist" ]; then
+  wget https://github.com/llgcode/songbook/releases/download/$version/$dist.zip -O $OPENSHIFT_TMP_DIR/$dist.zip
+  unzip $OPENSHIFT_TMP_DIR/$dist.zip -d $OPENSHIFT_SONGBOOK_DIR/usr/
+  rm -fr $OPENSHIFT_TMP_DIR/$dist.zip
+fi
+
+
+OPENSHIFT_VERTX_PROXY_IP=$(ping -c 1 ${OPENSHIFT_GEAR_DNS} | awk '{ print $3 ; exit }' | sed 's/(//g' | sed 's/)//g')
