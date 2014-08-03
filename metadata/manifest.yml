@@ -1,4 +1,4 @@
-Name: Songbook
+Name: songbook
 Cartridge-Short-Name: songbook
 Cartridge-Version: '0.1'
 Cartridge-Vendor: kawane
@@ -10,7 +10,7 @@ Versions:
   - '0.2'
 License: "The Apache License, version 2.0"
 License-Url: https://www.apache.org/licenses/LICENSE-2.0.html
-Vendor: Kawane
+Vendor: kawane
 Categories:
   - service
   - music
