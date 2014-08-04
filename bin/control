@@ -112,7 +112,7 @@ function start() {
 
   export JAVA_HOME="$OPENSHIFT_SONGBOOK_DIR/usr/jdk1.8.0_05"
   export CLASSPATH=:${SONGBOOK_HOME}/jar/songbook.jar
-  export VERTX_JUL_CONFIG=$OPENSHIFT_SONGBOOK_DIR/conf/logging.properties
+  export VERTX_JUL_CONFIG=$OPENSHIFT_SONGBOOK_DIR/shared/conf/logging.properties
 
   $VERTX_HOME/bin/vertx $vertx_run $vertx_run_options $vertx_cluster >> $logf 2>&1 &
   
