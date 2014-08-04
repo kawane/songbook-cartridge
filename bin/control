@@ -85,6 +85,7 @@ function start() {
   fi
 
   vertx_run="run songbook.server.Server"
+  # TODO change to repo
   export DATA_ROOT=${OPENSHIFT_SONGBOOK_DIR}/usr/data
 
   envf="$OPENSHIFT_REPO_DIR/configuration/songbook.env"
@@ -109,6 +110,10 @@ function start() {
 
   # Start up vertx
   pushd $OPENSHIFT_REPO_DIR > /dev/null
+
+  export HOST=${OPENSHIFT_SONGBOOK_IP}
+  export PORT=${OPENSHIFT_SONGBOOK_PORT}
+  export WEB_ROOT=${SONGBOOK_HOME}/web
 
   export JAVA_HOME="$OPENSHIFT_SONGBOOK_DIR/usr/jdk1.8.0_05"
   export CLASSPATH=:${SONGBOOK_HOME}/jar/songbook.jar
