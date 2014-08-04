@@ -93,6 +93,7 @@ function start() {
   [ -f "$envf" ]  &&  source "$envf"
 
  
+
   # Setup max heap and permgen
   if [ -z "$JVM_HEAP_RATIO" ]; then
     JVM_HEAP_RATIO=0.5
@@ -109,12 +110,14 @@ function start() {
   # Start up vertx
   pushd $OPENSHIFT_REPO_DIR > /dev/null
 
-    export CLASSPATH=:${SONGBOOK_HOME}/jar/songbook.jar
-    export VERTX_JUL_CONFIG=$OPENSHIFT_SONGBOOK_DIR/conf/logging.properties
-    $VERTX_HOME/bin/vertx $vertx_run $vertx_run_options $vertx_cluster >> $logf 2>&1 &
-    
-    PROCESS_ID=$!
-    echo "$PROCESS_ID" > ${VERTX_PID_FILE}
+  export JAVA_HOME="$OPENSHIFT_DATA_DIR/jdk/jdk1.8.0_05"
+  export CLASSPATH=:${SONGBOOK_HOME}/jar/songbook.jar
+  export VERTX_JUL_CONFIG=$OPENSHIFT_SONGBOOK_DIR/conf/logging.properties
+  
+  $VERTX_HOME/bin/vertx $vertx_run $vertx_run_options $vertx_cluster >> $logf 2>&1 &
+  
+  PROCESS_ID=$!
+  echo "$PROCESS_ID" > ${VERTX_PID_FILE}
   popd > /dev/null
 }
 
