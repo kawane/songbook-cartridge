@@ -27,5 +27,9 @@ if [ ! -d "$OPENSHIFT_SONGBOOK_DIR/usr/$dist" ]; then
   rm -fr $OPENSHIFT_TMP_DIR/$dist.zip
 fi
 
+# Templates
+export OPENSHIFT_SONGBOOK_LOG_DIR=${OPENSHIFT_HOMEDIR}/app-root/logs
+sed -i -e "s|\${env.OPENSHIFT_SONGBOOK_LOG_DIR}|${OPENSHIFT_SONGBOOK_LOG_DIR}|g" ./conf/logging.properties
+
 
 OPENSHIFT_VERTX_PROXY_IP=$(ping -c 1 ${OPENSHIFT_GEAR_DNS} | awk '{ print $3 ; exit }' | sed 's/(//g' | sed 's/)//g')
