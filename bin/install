@@ -22,7 +22,7 @@ fi
 
 # Installs Songbook
 if [ ! -d "$OPENSHIFT_SONGBOOK_DIR/usr/$dist" ]; then
-  wget https://github.com/llgcode/songbook/releases/download/$version/$dist.zip -O $OPENSHIFT_TMP_DIR/$dist.zip
+  wget https://github.com/kawane/songbook/releases/download/$version/$dist.zip -O $OPENSHIFT_TMP_DIR/$dist.zip
   unzip $OPENSHIFT_TMP_DIR/$dist.zip -d $OPENSHIFT_SONGBOOK_DIR/usr/
   rm -fr $OPENSHIFT_TMP_DIR/$dist.zip
 fi
