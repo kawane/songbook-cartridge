@@ -27,9 +27,9 @@ if [ ! -d "$OPENSHIFT_SONGBOOK_DIR/usr/$dist" ]; then
   rm -fr $OPENSHIFT_TMP_DIR/$dist.zip
 
   # Copy initial data if none
-  if [ ! -d "${OPENSHIFT_REPO_DIR}/data" ]; then
-    mkdir ${OPENSHIFT_REPO_DIR}/data
-    cp -fr ${OPENSHIFT_SONGBOOK_DIR}/usr/songbook/data/* ${OPENSHIFT_REPO_DIR}/data/
+  if [ ! -d "${OPENSHIFT_REPO_DIR}/data/songs" ]; then
+    mkdir -p ${OPENSHIFT_REPO_DIR}/data/songs
+    cp ${OPENSHIFT_SONGBOOK_DIR}/usr/songbook/data/songs/* ${OPENSHIFT_REPO_DIR}/data/songs
   fi
 
 fi
