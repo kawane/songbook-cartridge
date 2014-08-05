@@ -85,9 +85,8 @@ function start() {
   fi
 
   vertx_run="run songbook.server.Server"
-  # TODO change to repo
-  export DATA_ROOT=${OPENSHIFT_SONGBOOK_DIR}/usr/data
-
+  export DATA_ROOT=${OPENSHIFT_REPO_DIR}/data
+  
   envf="$OPENSHIFT_REPO_DIR/configuration/songbook.env"
   
   #  Source environment if it exists.
