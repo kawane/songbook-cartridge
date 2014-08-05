@@ -128,6 +128,7 @@ function start() {
   
   PROCESS_ID=$!
   echo "$PROCESS_ID" > ${VERTX_PID_FILE}
+
   popd > /dev/null
 }
 
@@ -152,11 +153,20 @@ function tidy() {
   rm -rf $OPENSHIFT_SONGBOOK_LOG_DIR/*
 }
 
+# Commit changes to git
+function commit() {
+  client_message "Committing data to Git"
+  pushd $OPENSHIFT_REPO_DIR > /dev/null
+  git add -all && git commit -m Update
+  popd > /dev/null
+}
+
 case "$1" in
   start)        start ;;
   stop)         stop ;;
   restart)      restart ;;
   status)       status ;;
   tidy)         tidy ;;
+  commit)       commit ;;
   *)            exit 0
 esac

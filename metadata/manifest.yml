@@ -36,3 +36,5 @@ Endpoints:
     Mappings:
       - Frontend:      ""
         Backend:       ""
+Additional-Control-Actions:
+    - commit
