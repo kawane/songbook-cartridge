@@ -87,12 +87,18 @@ function start() {
   vertx_run="run songbook.server.Server"
   export DATA_ROOT=${OPENSHIFT_REPO_DIR}/data
   
-  envf="$OPENSHIFT_REPO_DIR/configuration/songbook.env"
+  envf="${OPENSHIFT_REPO_DIR}/configuration/songbook.env"
   
   #  Source environment if it exists.
   [ -f "$envf" ]  &&  source "$envf"
 
  
+  # Copy initial data if none
+  if [ ! -d "${DATA_ROOT}/songs" ]; then
+    mkdir -p ${DATA_ROOT}/songs
+    cp ${OPENSHIFT_SONGBOOK_DIR}/usr/songbook/data/songs/* ${DATA_ROOT}/songs
+  fi
+
 
   # Setup max heap and permgen
   if [ -z "$JVM_HEAP_RATIO" ]; then

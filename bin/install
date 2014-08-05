@@ -25,13 +25,6 @@ if [ ! -d "$OPENSHIFT_SONGBOOK_DIR/usr/$dist" ]; then
   wget https://github.com/llgcode/songbook/releases/download/$version/$dist.zip -O $OPENSHIFT_TMP_DIR/$dist.zip
   unzip $OPENSHIFT_TMP_DIR/$dist.zip -d $OPENSHIFT_SONGBOOK_DIR/usr/
   rm -fr $OPENSHIFT_TMP_DIR/$dist.zip
-
-  # Copy initial data if none
-  if [ ! -d "${OPENSHIFT_REPO_DIR}/data/songs" ]; then
-    mkdir -p ${OPENSHIFT_REPO_DIR}/data/songs
-    cp ${OPENSHIFT_SONGBOOK_DIR}/usr/songbook/data/songs/* ${OPENSHIFT_REPO_DIR}/data/songs
-  fi
-
 fi
 
 # Replaces Templates
