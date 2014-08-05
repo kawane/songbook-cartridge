@@ -2,7 +2,7 @@ Name: songbook
 Cartridge-Short-Name: songbook
 Cartridge-Version: '0.1'
 Cartridge-Vendor: kawane
-Display-Name: Songbok 0.2
+Display-Name: Songbook 0.2.0
 Description: "Kawane's Songbook."
 Version: '0.2.0'
 Source-Url: git://github.com/kawane/songbook-cartridge.git
